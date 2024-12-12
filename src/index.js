@@ -1,10 +1,16 @@
-import { Paciente, Agendamento } from './classes/index.js';
+import Paciente from './novas/classes/Paciente.js';
+import db from './config/sequelize.js';
 import promptSync from 'prompt-sync';
 
 const entrada = promptSync({ sigint: true });
 
+await db.iniciar();
+await db.sequelize.sync().then(() => {
+    console.log('conectado com o banco de dados.');
+});
+
 const cadastro = new Paciente();
-const consulta = new Agendamento(cadastro);
+//const consulta = new Agendamento(cadastro);
 
 const menus = [
     {
@@ -72,7 +78,7 @@ while (true) {
 
     } else if (tela == 4) {
         let cpf = entrada(`CPF: `);
-        let imprimir = cadastro.excluirPaciente(cpf, consulta.listarAgendamentos()).mensagem;
+        //let imprimir = cadastro.excluirPaciente(cpf, consulta.listarAgendamentos()).mensagem;
         console.log(imprimir);
 
         let adicionar = entrada(`Excluir outro paciente? [ s / n ]: `);
@@ -89,11 +95,16 @@ while (true) {
 
     } else if (tela == 5 || tela == 6) {
 
-        let imprimir = (tela == 5) ? cadastro.listarPacientes().porCPF : cadastro.listarPacientes().porNome;
-        console.log(imprimir);
+        //let imprimir = (tela == 5) ? cadastro.listarPacientes().porCPF : cadastro.listarPacientes().porNome;
 
-        let final = entrada(`Voltar pro Menu Principal? [ s / n ]: `);
-        tela = (final == 's') ? 0 : 9;
+        const listarPacientes = async () => {
+            let imprimir = await cadastro.listarPacientes();
+            console.log(imprimir);
+
+            let final = entrada(`Voltar pro Menu Principal? [ s / n ]: `);
+            tela = (final == 's') ? 0 : 9;
+        };
+        listarPacientes();
 
     } else if (tela == 7) {
         let cpf = entrada(`CPF: `);
@@ -106,7 +117,7 @@ while (true) {
             let horaInicial = entrada(`Hora inicial: `);
             let horaFinal = entrada(`Hora final: `);
 
-            let imprimir = consulta.realizarAgendamento(cpf, dataConsulta, horaInicial, horaFinal).mensagem;
+            //let imprimir = consulta.realizarAgendamento(cpf, dataConsulta, horaInicial, horaFinal).mensagem;
             console.log(`\n${imprimir}\n`);
         }
 
@@ -132,7 +143,7 @@ while (true) {
             let dataConsulta = entrada(`Data da consulta: `);
             let horaInicial = entrada(`Hora inicial: `);
 
-            let imprimir = consulta.cancelarAgendamento(cpf, dataConsulta, horaInicial).mensagem;
+            //let imprimir = consulta.cancelarAgendamento(cpf, dataConsulta, horaInicial).mensagem;
             console.log(`\n${imprimir}\n`);
         }
 
@@ -150,7 +161,7 @@ while (true) {
 
     } else if (tela == 10) {
         
-        let imprimir = consulta.listarAgenda(cadastro.dadosPacientes());
+        //let imprimir = consulta.listarAgenda(cadastro.dadosPacientes());
         console.log(imprimir);
 
         let final = entrada(`Voltar pro Menu Principal? [ s / n ]: `);
